@@ -1,13 +1,13 @@
 import pygame
 
-BACKGROUND_IMAGE = 'bob.png'
+BACKGROUND_IMAGE = 'prizm.png'
 WHITE = (255, 255, 255)
 
 pygame.init()
 
 pygame.mouse.set_cursor(*pygame.cursors.arrow)
 screen = pygame.display.set_mode((800, 450))
-caption = pygame.display.set_caption("Pygame")
+caption = pygame.display.set_caption("Prizm")
 clock = pygame.time.Clock()
 
 # make the background
