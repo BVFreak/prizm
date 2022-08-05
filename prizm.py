@@ -7,7 +7,6 @@ screen = pygame.display.set_mode((width, height))
 caption = pygame.display.set_caption("Prizm")
 clock = pygame.time.Clock()
 
-#Loading Images
 bob_surface = pygame.image.load('sprites/bob.png')
 
 x_position = 0
@@ -21,18 +20,18 @@ while True:
             clock.tick(60)
 
 
-    #Keyboard Input
+
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_RIGHT]:
+    if keys[pygame.K_d]:
         x_position = x_position + 1
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_a]:
         x_position = x_position - 1
-    if keys[pygame.K_UP]:
+    if keys[pygame.K_w]:
         y_position = y_position - 1
-    if keys[pygame.K_DOWN]:
+    if keys[pygame.K_s]:
         y_position = y_position + 1
         
-    #Background/Drawing Image
+    
     screen.fill((255, 255, 255))
     
     screen.blit(bob_surface,(x_position, y_position))
