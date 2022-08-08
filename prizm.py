@@ -23,13 +23,13 @@ while True:
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_d]:
-        x_position = x_position + 1
+        x_position = x_position + 0.75
     if keys[pygame.K_a]:
-        x_position = x_position - 1
+        x_position = x_position - 0.75
     if keys[pygame.K_w]:
-        y_position = y_position - 1
+        y_position = y_position - 0.75
     if keys[pygame.K_s]:
-        y_position = y_position + 1
+        y_position = y_position + 0.75
         
     
     screen.fill((255, 255, 255))
