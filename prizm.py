@@ -76,6 +76,7 @@ def settings():
 
 
 def main_menu():
+    pygame.mixer.music.load(song.mp3)
     while True:
         screen.fill(BACKGROUND_MENU)
         # screen.blit(background, (0, 0))
