@@ -18,7 +18,7 @@ BACKGROUND_GAME = "white"
 BACKGROUND_SETTINGS = "lightblue"
 
 
-def get_font(size):  # Returns Press-Start-2P in the desired size
+def get_font(size):  # Returns Font in the desired size
     return pygame.font.Font("assets/font.ttf", size)
 
 
