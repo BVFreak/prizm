@@ -1,5 +1,7 @@
 ## Prizm
 
 `its a game made with pygame`
-*its cool*
+
+**its cool**
+
 _monke_
