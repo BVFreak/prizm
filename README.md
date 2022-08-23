@@ -5,3 +5,5 @@
 **its cool**
 
 _monke_
+
+pygame.mixer.music.load(song.mp3)
