@@ -39,8 +39,8 @@ def play():
 
     x_position = (width/2)-50
     y_position = (height/2)-50
-    x_increment = 1.5
-    y_increment = x_increment
+    x_increment = 3.5
+    y_increment = 3.5
 
     x_world_position = -2000
     y_world_position = -2000
@@ -58,36 +58,48 @@ def play():
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             pygame.mixer.music.play()
+            pygame.mixer.Sound.play(sound_beep1)
             return
 
         # movement
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            #x_position = x_position + x_increment
+        if keys[pygame.K_d]:
             x_world_position = x_world_position - x_increment
 
             if not facing_right:
                 facing_right = True 
                 bob = bob_surface
             
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            #x_position = x_position - x_increment
+        if keys[pygame.K_a]:
             x_world_position = x_world_position + x_increment
 
             if facing_right:
                 facing_right = False
                 bob = bob_surface_left
 
-        if keys[pygame.K_w] or keys[pygame.K_UP]:
-            #y_position = y_position - y_increment
+        if keys[pygame.K_w]:
             y_world_position = y_world_position + y_increment
 
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            #y_position = y_position + y_increment
+        if keys[pygame.K_s]:
             y_world_position = y_world_position - y_increment
 
         # shoot
         if keys[pygame.K_SPACE]:
             pygame.mixer.Sound.play(sound_shoot)
+
+        # sprint
+        if keys[pygame.K_LSHIFT]:
+            if keys[pygame.K_d]:
+                x_world_position = x_world_position - x_increment
+            
+            if keys[pygame.K_a]:
+                x_world_position = x_world_position + x_increment
+
+            if keys[pygame.K_w]:
+                y_world_position = y_world_position + y_increment
+
+            if keys[pygame.K_s]:
+                y_world_position = y_world_position - y_increment
+            
 
         screen.blit(BACKGROUND_WORLD_IMAGE, (x_world_position, y_world_position))
         screen.blit(bob, (x_position, y_position))
@@ -103,17 +115,19 @@ def settings():
 
         RETURN_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550),
                              text_input="DONE", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-
+                            
         for button in [RETURN_BUTTON]:
             button.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN_BUTTON.checkForInput(mouse_pos):
+                    pygame.mixer.Sound.play(sound_beep1)
                     return
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
+            pygame.mixer.Sound.play(sound_beep1)
             return
 
         pygame.display.update()
@@ -151,7 +165,7 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(mouse_pos):
-                    pygame.mixer.Sound.play(sound_beep2)
+                    pygame.mixer.Sound.play(sound_beep1)
                     play()
                 if SETTINGS_BUTTON.checkForInput(mouse_pos):
                     pygame.mixer.Sound.play(sound_beep1)
