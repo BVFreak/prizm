@@ -10,13 +10,16 @@ screen = pygame.display.set_mode((width, height))
 
 clock = pygame.time.Clock()
 
-background = pygame.image.load("assets/Background.png")
+BACKGROUND_MENU_IMAGE = pygame.image.load("assets/Background-Menu.png")
+BACKGROUND_WORLD_IMAGE = pygame.image.load("assets/background-world.png")
+
 bob_surface = pygame.image.load("assets/bob.png")
+bob_surface_left = pygame.transform.flip(bob_surface, True, False)
 
 sound_thisisbob = pygame.mixer.Sound("assets/audio/thisisbob.mp3")
 sound_shoot = pygame.mixer.Sound("assets/audio/pewpew.mp3")
-sound_beep1 = pygame.mixer.Sound("assets/audio/beep1.mp3")
-sound_beep2 = pygame.mixer.Sound("assets/audio/beep2.mp3")
+sound_beep1 = pygame.mixer.Sound("assets/audio/beep1.wav")
+sound_beep2 = pygame.mixer.Sound("assets/audio/beep2.wav")
 
 MUSIC_MAINMENU = "assets/audio/song.mp3"
 MUSIC_LEVEL1 = None
@@ -34,10 +37,17 @@ def play():
     pygame.mixer.music.stop()
     pygame.mixer.Sound.play(sound_thisisbob)
 
-    x_position = 640
-    y_position = 360
-    x_increment = 1
-    y_increment = 1
+    x_position = (width/2)-50
+    y_position = (height/2)-50
+    x_increment = 1.5
+    y_increment = x_increment
+
+    x_world_position = -2000
+    y_world_position = -2000
+
+    facing_right = True
+    flip = False
+    bob = bob_surface
 
     while True:
         screen.fill(BACKGROUND_GAME)
@@ -52,27 +62,43 @@ def play():
 
         # movement
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            x_position = x_position + x_increment
+            #x_position = x_position + x_increment
+            x_world_position = x_world_position - x_increment
+
+            if not facing_right:
+                facing_right = True 
+                bob = bob_surface
+            
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            x_position = x_position - x_increment
+            #x_position = x_position - x_increment
+            x_world_position = x_world_position + x_increment
+
+            if facing_right:
+                facing_right = False
+                bob = bob_surface_left
+
         if keys[pygame.K_w] or keys[pygame.K_UP]:
-            y_position = y_position - y_increment
+            #y_position = y_position - y_increment
+            y_world_position = y_world_position + y_increment
+
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-            y_position = y_position + y_increment
+            #y_position = y_position + y_increment
+            y_world_position = y_world_position - y_increment
 
         # shoot
         if keys[pygame.K_SPACE]:
             pygame.mixer.Sound.play(sound_shoot)
-        
 
-        screen.fill((255, 255, 255))
-        screen.blit(bob_surface, (x_position, y_position))
+        screen.blit(BACKGROUND_WORLD_IMAGE, (x_world_position, y_world_position))
+        screen.blit(bob, (x_position, y_position))
+
         pygame.display.update()
 
 
 def settings():
     while True:
         screen.fill(BACKGROUND_SETTINGS)
+        screen.blit(BACKGROUND_MENU_IMAGE, (0, 0))
         mouse_pos = pygame.mouse.get_pos()
 
         RETURN_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550),
@@ -99,7 +125,7 @@ def main_menu():
 
     while True:
         screen.fill(BACKGROUND_MENU)
-        # screen.blit(background, (0, 0))
+        screen.blit(BACKGROUND_MENU_IMAGE, (0, 0))
 
         mouse_pos = pygame.mouse.get_pos()
 
@@ -116,7 +142,6 @@ def main_menu():
         screen.blit(MENU_TEXT, MENU_RECT)
 
         for button in [PLAY_BUTTON, SETTINGS_BUTTON, QUIT_BUTTON]:
-            pygame.mixer.Sound.play(sound_beep2)
             button.changeColor(mouse_pos)
             button.update(screen)
 
@@ -126,7 +151,7 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(mouse_pos):
-                    pygame.mixer.Sound.play(sound_beep1)
+                    pygame.mixer.Sound.play(sound_beep2)
                     play()
                 if SETTINGS_BUTTON.checkForInput(mouse_pos):
                     pygame.mixer.Sound.play(sound_beep1)
