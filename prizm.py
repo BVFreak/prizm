@@ -11,7 +11,13 @@ screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
 
 background = pygame.image.load("assets/Background.png")
-bob_surface = pygame.image.load('assets/bob.png')
+bob_surface = pygame.image.load("assets/bob.png")
+
+sound_thisisbob = pygame.mixer.Sound("assets/audio/thisisbob.mp3")
+sound_shoot = pygame.mixer.Sound("assets/audio/pewpew.mp3")
+
+MUSIC_MAINMENU = "assets/audio/song.mp3"
+MUSIC_LEVEL1 = None
 
 BACKGROUND_MENU = "black"
 BACKGROUND_GAME = "white"
@@ -23,6 +29,9 @@ def get_font(size):  # Returns Font in the desired size
 
 
 def play():
+    pygame.mixer.music.stop()
+    pygame.mixer.Sound.play(sound_thisisbob)
+
     x_position = 0
     y_position = 0
     x_increment = 1
@@ -36,7 +45,10 @@ def play():
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
+            pygame.mixer.music.play()
             return
+
+        # movement
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             x_position = x_position + x_increment
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
@@ -45,6 +57,12 @@ def play():
             y_position = y_position - y_increment
         if keys[pygame.K_s] or keys[pygame.K_DOWN]:
             y_position = y_position + y_increment
+
+        # shoot
+        if keys[pygame.K_SPACE]:
+            pygame.mixer.Sound.play(sound_shoot)
+q
+        
 
         screen.fill((255, 255, 255))
         screen.blit(bob_surface, (x_position, y_position))
@@ -76,7 +94,9 @@ def settings():
 
 
 def main_menu():
-    pygame.mixer.music.load(song.mp3)
+    pygame.mixer.music.load(MUSIC_MAINMENU)
+    pygame.mixer.music.play()
+
     while True:
         screen.fill(BACKGROUND_MENU)
         # screen.blit(background, (0, 0))
