@@ -15,6 +15,8 @@ bob_surface = pygame.image.load("assets/bob.png")
 
 sound_thisisbob = pygame.mixer.Sound("assets/audio/thisisbob.mp3")
 sound_shoot = pygame.mixer.Sound("assets/audio/pewpew.mp3")
+sound_beep1 = pygame.mixer.Sound("assets/audio/beep1.mp3")
+sound_beep2 = pygame.mixer.Sound("assets/audio/beep2.mp3")
 
 MUSIC_MAINMENU = "assets/audio/song.mp3"
 MUSIC_LEVEL1 = None
