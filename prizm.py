@@ -61,7 +61,6 @@ def play():
         # shoot
         if keys[pygame.K_SPACE]:
             pygame.mixer.Sound.play(sound_shoot)
-q
         
 
         screen.fill((255, 255, 255))
