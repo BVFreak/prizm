@@ -15,6 +15,8 @@ bob_surface = pygame.image.load("assets/bob.png")
 
 sound_thisisbob = pygame.mixer.Sound("assets/audio/thisisbob.mp3")
 sound_shoot = pygame.mixer.Sound("assets/audio/pewpew.mp3")
+sound_beep1 = pygame.mixer.Sound("assets/audio/beep1.mp3")
+sound_beep2 = pygame.mixer.Sound("assets/audio/beep2.mp3")
 
 MUSIC_MAINMENU = "assets/audio/song.mp3"
 MUSIC_LEVEL1 = None
@@ -69,7 +71,6 @@ def play():
 
 
 def settings():
-
     while True:
         screen.fill(BACKGROUND_SETTINGS)
         mouse_pos = pygame.mouse.get_pos()
@@ -115,6 +116,7 @@ def main_menu():
         screen.blit(MENU_TEXT, MENU_RECT)
 
         for button in [PLAY_BUTTON, SETTINGS_BUTTON, QUIT_BUTTON]:
+            pygame.mixer.Sound.play(sound_beep2)
             button.changeColor(mouse_pos)
             button.update(screen)
 
@@ -124,10 +126,13 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(mouse_pos):
+                    pygame.mixer.Sound.play(sound_beep1)
                     play()
                 if SETTINGS_BUTTON.checkForInput(mouse_pos):
+                    pygame.mixer.Sound.play(sound_beep1)
                     settings()
                 if QUIT_BUTTON.checkForInput(mouse_pos):
+                    pygame.mixer.Sound.play(sound_beep1)
                     pygame.quit()
                     sys.exit()
 
