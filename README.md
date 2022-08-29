@@ -1,3 +1,5 @@
+https://bvfreak.github.io/prizm/
+
 ## Prizm
 
 - its a game made with pygame
