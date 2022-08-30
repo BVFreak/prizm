@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import pygame
+import random
 from button import Button
 
 pygame.init()
@@ -16,13 +17,12 @@ BACKGROUND_WORLD_IMAGE = pygame.image.load("assets/background-world.png")
 bob_surface = pygame.image.load("assets/bob.png")
 bob_surface_left = pygame.transform.flip(bob_surface, True, False)
 
-sound_thisisbob = pygame.mixer.Sound("assets/audio/thisisbob.mp3")
 sound_shoot = pygame.mixer.Sound("assets/audio/pewpew.mp3")
-sound_beep1 = pygame.mixer.Sound("assets/audio/beep1.wav")
-sound_beep2 = pygame.mixer.Sound("assets/audio/beep2.wav")
+sound_beep1 = pygame.mixer.Sound("assets/audio/beep1.mp3")
+sound_beep2 = pygame.mixer.Sound("assets/audio/beep2.mp3")
 
-MUSIC_MAINMENU = "assets/audio/song.mp3"
-MUSIC_LEVEL1 = None
+MUSIC_MAINMENU = "assets/audio/song1.mp3"
+MUSIC_MAINMENU1 = "assets/audio/song.mp3"
 
 BACKGROUND_MENU = "black"
 BACKGROUND_GAME = "white"
@@ -35,12 +35,11 @@ def get_font(size):  # Returns Font in the desired size
 
 def play():
     pygame.mixer.music.stop()
-    pygame.mixer.Sound.play(sound_thisisbob)
 
     x_position = (width/2)-50
     y_position = (height/2)-50
-    x_increment = 3.5
-    y_increment = 3.5
+    x_increment = 2
+    y_increment = 2
 
     x_world_position = -2000
     y_world_position = -2000
@@ -111,11 +110,17 @@ def settings():
     while True:
         screen.fill(BACKGROUND_SETTINGS)
         screen.blit(BACKGROUND_MENU_IMAGE, (0, 0))
+
         mouse_pos = pygame.mouse.get_pos()
+
+        SETTINGS_TEXT = get_font(50).render("Controlsrender\nWASD to move\nShift to sprint\nLeft click to attack\nRight click to defend\nEscape to go back to main menu\n\nMade by Blake VernerW\nith special thanks to Anthony Tassonyi, Ruan Verner and David Nugent.\n", True, "#999999")
+        SETTINGS_RECT = SETTINGS_TEXT.get_rect(center=(640, 100))
 
         RETURN_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550),
                              text_input="DONE", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-                            
+
+        screen.blit(SETTINGS_TEXT, SETTINGS_RECT)
+
         for button in [RETURN_BUTTON]:
             button.update(screen)
 
@@ -134,8 +139,14 @@ def settings():
 
 
 def main_menu():
-    pygame.mixer.music.load(MUSIC_MAINMENU)
-    pygame.mixer.music.play()
+    pygame.mixer.music.stop()
+    choice_music = random.randint(1, 2)
+    if choice_music == 1:
+        pygame.mixer.music.load(MUSIC_MAINMENU)
+        pygame.mixer.music.play()
+    elif choice_music == 2:
+        pygame.mixer.music.load(MUSIC_MAINMENU1)
+        pygame.mixer.music.play()
 
     while True:
         screen.fill(BACKGROUND_MENU)
