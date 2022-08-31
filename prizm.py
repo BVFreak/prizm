@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# hi
+# hi hi
 import sys
 import pygame
 import random
