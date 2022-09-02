@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# hi hi
 import sys
 import pygame
 import random
@@ -19,11 +18,9 @@ clock = pygame.time.Clock()
 BACKGROUND_MENU_IMAGE = pygame.image.load("assets/Background-Menu.png").convert()
 BACKGROUND_WORLD_IMAGE = pygame.image.load("assets/background-world.png").convert()
 
-# Bob lefty bobby
-bob_surface = pygame.image.load("assets/bob.png").convert_alpha()
-normal_zomboi_surface = pygame.image.load('assets/normal_zomboi.png').convert_alpha()
-bob_surface_left = pygame.transform.flip(bob_surface, True, False)
-
+# Bobby lefty bobby
+bobby_surface = pygame.image.load("assets/bobby.png").convert_alpha()
+bobby_surface_left = pygame.transform.flip(bobby_surface, True, False).convert_alpha()
 
 # sounds
 sound_shoot = pygame.mixer.Sound("assets/audio/pewpew.mp3")
@@ -46,21 +43,23 @@ def get_font(size):  # Returns Font in the desired size
 # stops music
 def play():
     pygame.mixer.music.stop()
-
+    zombieimg = pygame.image.load('assets/normal_zomboi.png').convert_alpha()
+    
     # movement variables
     x_position = (width/2)-50
     y_position = (height/2)-50
     x_increment = 0.5
     y_increment = 0.5
-
+    zombie_x_position = 0
+    zombie_y_position = 0
 # world generation size
     x_world_position = -5000
     y_world_position = -5000
 
-    # bob righty righthousand
+    # bobby righty righthousand
     facing_right = True
     flip = False
-    bob = bob_surface
+    bobby = bobby_surface
 
     # while true loop
     while True:
@@ -82,14 +81,14 @@ def play():
 
             if not facing_right:
                 facing_right = True 
-                bob = bob_surface
+                bobby = bobby_surface
         # world moving         
         if keys[pygame.K_a]:
             x_world_position = x_world_position + x_increment
 
             if facing_right:
                 facing_right = False
-                bob = bob_surface_left
+                bobby = bobby_surface_left
 
         if keys[pygame.K_w]:
             y_world_position = y_world_position + y_increment
@@ -114,15 +113,14 @@ def play():
 
             if keys[pygame.K_s]:
                 y_world_position = y_world_position - y_increment
-            
-            enemies = [normal_zomboi_surface]
-            random.choice(enemies)
-     
+
+
         screen.blit(BACKGROUND_WORLD_IMAGE, (x_world_position, y_world_position))
-        screen.blit(bob, (x_position, y_position))
+        screen.blit(bobby, (x_position, y_position))
+        screen.blit(zombieimg, (zombie_x_position, zombie_y_position))
+
 
         pygame.display.update()
-
 
 def settings():
     while True:
