@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+from operator import is_
 import sys
+from telnetlib import AYT
 import pygame
-import random
 from button import Button
 
 pygame.init()
@@ -37,7 +38,7 @@ BACKGROUND_SETTINGS = "lightblue"
 
 
 # menu font
-def get_font(size):  # Returns Font in the desired size
+def get_font(size):  # Returns univers condesensed font in the desired size
     return pygame.font.Font("assets/font.ttf", size)
 
 # stops music
@@ -52,7 +53,31 @@ def play():
     y_increment = 0.5
     zombie_x_position = 0
     zombie_y_position = 0
-# world generation size
+    movement_box = 50
+
+    def is_player_at_edge_box(direction):
+
+        print(x_position, y_position)
+        # work out dimensions of box
+
+        x_box_left, x_box_right = ((width/2)-movement_box, (width/2)+movement_box)
+        y_box_down, y_box_up = ((height/2)-movement_box, (height/2)+movement_box)
+        print(x_box_left, x_box_right, y_box_down, y_box_up)
+        if x_position < x_box_left and direction == 'right':
+            print('left')
+            return True
+        if x_position > x_box_right and direction == 'left':
+            print('right')
+            return True
+        if y_position < y_box_down and direction == 'up':
+            print('down')
+            return True
+        if y_position > y_box_up and direction == 'down':
+            print('up')
+            return True
+
+
+    # world generation size
     x_world_position = -5000
     y_world_position = -5000
 
@@ -77,24 +102,40 @@ def play():
 
         # movement
         if keys[pygame.K_d]:
-            x_world_position = x_world_position - x_increment
+            if is_player_at_edge_box('right'):
+                x_world_position = x_world_position - x_increment
+            else:
+                x_position = x_position + x_increment
 
+            """
             if not facing_right:
                 facing_right = True 
                 bobby = bobby_surface
-        # world moving         
-        if keys[pygame.K_a]:
-            x_world_position = x_world_position + x_increment
+            """
 
+        if keys[pygame.K_a]:
+            if is_player_at_edge_box('left'):
+                x_world_position = x_world_position + x_increment
+            else:
+                x_position = x_position - x_increment
+            
+            """
             if facing_right:
                 facing_right = False
                 bobby = bobby_surface_left
+            """
 
         if keys[pygame.K_w]:
-            y_world_position = y_world_position + y_increment
+            if is_player_at_edge_box('up'):
+                y_world_position = y_world_position + y_increment
+            else:
+                y_position = y_position - y_increment
 
         if keys[pygame.K_s]:
-            y_world_position = y_world_position - y_increment
+            if is_player_at_edge_box('down'):
+                y_world_position = y_world_position - y_increment
+            else:
+                y_position = y_position + y_increment
 
         # shoot
         if keys[pygame.K_SPACE]:
@@ -103,16 +144,28 @@ def play():
         # sprint
         if keys[pygame.K_LSHIFT]:
             if keys[pygame.K_d]:
-                x_world_position = x_world_position - x_increment
+                if is_player_at_edge_box('right'):
+                    x_world_position = x_world_position - x_increment
+                else:
+                    x_position = x_position + x_increment
             
             if keys[pygame.K_a]:
-                x_world_position = x_world_position + x_increment
+                if is_player_at_edge_box('left'):
+                    x_world_position = x_world_position + x_increment
+                else:
+                    x_position = x_position - x_increment
 
             if keys[pygame.K_w]:
-                y_world_position = y_world_position + y_increment
+                if is_player_at_edge_box('up'):
+                    y_world_position = y_world_position + y_increment
+                else:
+                    y_position = y_position - y_increment
 
             if keys[pygame.K_s]:
-                y_world_position = y_world_position - y_increment
+                if is_player_at_edge_box('down'):
+                    y_world_position = y_world_position - y_increment
+                else:
+                    y_position = y_position + y_increment
 
 
         screen.blit(BACKGROUND_WORLD_IMAGE, (x_world_position, y_world_position))
