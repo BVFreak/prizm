@@ -19,9 +19,24 @@ clock = pygame.time.Clock()
 BACKGROUND_MENU_IMAGE = pygame.image.load("assets/Background-Menu.png").convert()
 BACKGROUND_WORLD_IMAGE = pygame.image.load("assets/background-world.png").convert()
 
-# Bobby lefty bobby
+# bobby
 bobby_surface = pygame.image.load("assets/bobby.png").convert_alpha()
-bobby_surface_left = pygame.transform.flip(bobby_surface, True, False).convert_alpha()
+
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, pos, direction):
+        super().__init__()
+        self.image = pygame.image.load("assets/bullet.png").convert_alpha()
+        self.rect = self.image.get_rect(center=pos)
+        self.rect.center = pygame.Vector2(*pos)
+        self.direction = pygame.Vector2(*direction)
+
+    def update(self):
+        self.rect.center += self.direction
+
+bullets = pygame.sprite.Group()
+
+# zombie
+zombie_surface = pygame.image.load('assets/dave.png').convert_alpha()
 
 # sounds
 sound_shoot = pygame.mixer.Sound("assets/audio/pewpew.mp3")
@@ -44,47 +59,17 @@ def get_font(size):  # Returns univers condesensed font in the desired size
 # stops music
 def play():
     pygame.mixer.music.stop()
-    zombieimg = pygame.image.load('assets/normal_zomboi.png').convert_alpha()
     
     # movement variables
-    x_position = (width/2)-50
-    y_position = (height/2)-50
-    x_increment = 0.5
-    y_increment = 0.5
-    zombie_x_position = 0
-    zombie_y_position = 0
-    movement_box = 50
-
-    def is_player_at_edge_box(direction):
-
-        print(x_position, y_position)
-        # work out dimensions of box
-
-        x_box_left, x_box_right = ((width/2)-movement_box, (width/2)+movement_box)
-        y_box_down, y_box_up = ((height/2)-movement_box, (height/2)+movement_box)
-        print(x_box_left, x_box_right, y_box_down, y_box_up)
-        if x_position < x_box_left and direction == 'right':
-            print('left')
-            return True
-        if x_position > x_box_right and direction == 'left':
-            print('right')
-            return True
-        if y_position < y_box_down and direction == 'up':
-            print('down')
-            return True
-        if y_position > y_box_up and direction == 'down':
-            print('up')
-            return True
-
+    player_pos = pygame.Vector2((width/2)-50,(height/2)-50)
+    zombie_pos = pygame.Vector2((0,0))
+    zombie_speed = 0.75
+    x_increment = 1
+    y_increment = 1
 
     # world generation size
     x_world_position = -5000
     y_world_position = -5000
-
-    # bobby righty righthousand
-    facing_right = True
-    flip = False
-    bobby = bobby_surface
 
     # while true loop
     while True:
@@ -97,82 +82,57 @@ def play():
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             pygame.mixer.music.play()
-            pygame.mixer.Sound.play(sound_beep1)
             return
 
         # movement
         if keys[pygame.K_d]:
-            if is_player_at_edge_box('right'):
-                x_world_position = x_world_position - x_increment
-            else:
-                x_position = x_position + x_increment
-
-            """
-            if not facing_right:
-                facing_right = True 
-                bobby = bobby_surface
-            """
-
+            zombie_pos.x -= x_increment
+            x_world_position = x_world_position - x_increment
         if keys[pygame.K_a]:
-            if is_player_at_edge_box('left'):
-                x_world_position = x_world_position + x_increment
-            else:
-                x_position = x_position - x_increment
-            
-            """
-            if facing_right:
-                facing_right = False
-                bobby = bobby_surface_left
-            """
-
+            zombie_pos.x += x_increment
+            x_world_position = x_world_position + x_increment
         if keys[pygame.K_w]:
-            if is_player_at_edge_box('up'):
-                y_world_position = y_world_position + y_increment
-            else:
-                y_position = y_position - y_increment
-
+            zombie_pos.y += y_increment
+            y_world_position = y_world_position + y_increment
         if keys[pygame.K_s]:
-            if is_player_at_edge_box('down'):
-                y_world_position = y_world_position - y_increment
-            else:
-                y_position = y_position + y_increment
+            zombie_pos.y -= y_increment
+            y_world_position = y_world_position - y_increment
 
         # shoot
-        if keys[pygame.K_SPACE]:
-            pygame.mixer.Sound.play(sound_shoot)
+        if pygame.mouse.get_pressed()[0]:
+            dir_to_mouse: pygame.Vector2 = pygame.Vector2(pygame.mouse.get_pos()) - player_pos
+            if dir_to_mouse.length() != 0:
+                dir_to_mouse.normalize_ip()
+            bullet = Bullet(player_pos, dir_to_mouse)
+            bullets.add(bullet)
 
         # sprint
         if keys[pygame.K_LSHIFT]:
             if keys[pygame.K_d]:
-                if is_player_at_edge_box('right'):
-                    x_world_position = x_world_position - x_increment
-                else:
-                    x_position = x_position + x_increment
-            
+                zombie_pos.x -= x_increment
+                x_world_position = x_world_position - x_increment
             if keys[pygame.K_a]:
-                if is_player_at_edge_box('left'):
-                    x_world_position = x_world_position + x_increment
-                else:
-                    x_position = x_position - x_increment
-
+                zombie_pos.x += x_increment
+                x_world_position = x_world_position + x_increment
             if keys[pygame.K_w]:
-                if is_player_at_edge_box('up'):
-                    y_world_position = y_world_position + y_increment
-                else:
-                    y_position = y_position - y_increment
-
+                zombie_pos.y += y_increment
+                y_world_position = y_world_position + y_increment
             if keys[pygame.K_s]:
-                if is_player_at_edge_box('down'):
-                    y_world_position = y_world_position - y_increment
-                else:
-                    y_position = y_position + y_increment
+                zombie_pos.y -= y_increment
+                y_world_position = y_world_position - y_increment
 
+        direction: pygame.Vector2 = player_pos - zombie_pos
+        if direction.length() != 0:
+            direction.normalize_ip()
+
+        zombie_pos += direction * zombie_speed
 
         screen.blit(BACKGROUND_WORLD_IMAGE, (x_world_position, y_world_position))
-        screen.blit(bobby, (x_position, y_position))
-        screen.blit(zombieimg, (zombie_x_position, zombie_y_position))
+        screen.blit(bobby_surface, (player_pos))
+        screen.blit(zombie_surface, (zombie_pos))
 
-
+        bullets.update()
+        bullets.draw(screen)
         pygame.display.update()
 
 def settings():
@@ -196,12 +156,10 @@ def settings():
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if RETURN_BUTTON.checkForInput(mouse_pos):
-                    pygame.mixer.Sound.play(sound_beep1)
                     return
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            pygame.mixer.Sound.play(sound_beep1)
             return
 
         pygame.display.update()
@@ -240,13 +198,10 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(mouse_pos):
-                    pygame.mixer.Sound.play(sound_beep1)
                     play()
                 if SETTINGS_BUTTON.checkForInput(mouse_pos):
-                    pygame.mixer.Sound.play(sound_beep1)
                     settings()
                 if QUIT_BUTTON.checkForInput(mouse_pos):
-                    pygame.mixer.Sound.play(sound_beep1)
                     pygame.quit()
                     sys.exit()
 
